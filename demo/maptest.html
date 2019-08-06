@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=11">
+    <title>好数科技图片地图</title>
+    <script src="../hsmap.js"></script>
+    <!--        <script src="hsmap1.0.0.min.js"></script>-->
+</head>
+<style>
+    body{
+        margin:0;
+        overflow: hidden;
+    }
+    #imageMap{
+        position: relative;
+        left:0;
+        top:0;
+        z-index: 9;
+    }
+    .map-control{
+        position: absolute;
+        z-index: 10;
+        left:0;
+        bottom:0;
+    }
+</style>
+<body>
+    <canvas id="imageMap"></canvas>
+    <div class="map-control">
+        <button id="big" onclick="myMap.toBig()">放大</button>
+        <button id="small" onclick="myMap.toSmall()">缩小</button>
+        <button id="lines" onclick="myMap.drawLine(line)">路径</button>
+        <button id="clearP" onclick="myMap.clearPoint()">清除点</button>
+        <button id="clearL" onclick="myMap.clearLine()">清除线</button>
+        <button id="reduct" onclick="myMap.toreduct()">还原比例</button>
+        <button id="ding" >定位</button>
+    </div>
+</body>
+<script>
+var ding = document.getElementById('ding');
+var width = window.innerWidth;
+var height = window.innerHeight;
+document.getElementById("imageMap").setAttribute("style", "width: " + width + "px; height:" + height + "px; cursor: move");
+var myMap = new HSMap().Map("imageMap", {
+    img: "rd_map.png",
+    isDrag: true,
+    width: width,
+    height: height
+});
+
+var point2 = new HSMap().Point({
+    x: 443.23828124999994,
+    y: 230.93123209169053,
+    img: "blue.png",
+    isDrag: true,
+    bottom: {
+        color: "red",
+        x: 0,
+        y: 0
+    }
+});
+var point = new HSMap().Point({
+    x: 300,
+    y: 300,
+    img: "blue.png",
+    isDrag: true,
+    bottom: {
+        color: "rgba(102,204,0, 1)",
+    }
+});
+
+
+var line = new HSMap().Line({
+    color:'yellow',
+    width:4,
+    pointArr:[[100,100],[300,500],[500,800],[900,700]]
+});
+var x = 20;
+var y = 5;
+ // function flash(){
+ //     if(x > 20){
+ //         x = 0;
+ //         y = 0;
+ //     }else{
+ //         y +=0.25;
+ //         x +=1;
+ //     }
+ //     point2.bottom.x= x;
+ //     point2.bottom.y = y;
+ //     myMap.drawImage();
+ //     requestAnimationFrame(flash);
+ // }
+ // requestAnimationFrame(flash);
+point.addListener("click", function(){
+    alert("point click");
+});
+
+point2.addListener("click", function(){
+    alert("point2 click");
+});
+var point3 = new HSMap().Point({
+    x: 800,
+    y: 800,
+    img: "blue.png",
+    isDrag: true,
+    bottom: {
+        color: "rgba(102,204,0, 1)",
+    }
+});
+ding.onclick=function(){
+    myMap.addPoint(point3);
+};
+point3.addListener("click", function(){
+    alert("point3 click");
+});
+myMap.addListener("click", function(e){
+
+    var pos = myMap.winToPoint(e.clientX,e.clientY);
+    var tempPoint = new HSMap().Point({
+        x: pos.x,
+        y: pos.y,
+        img: "blue.png",
+        isDrag: true,
+        bottom: {
+            color: "rgba(102,204,0, 1)",
+        }
+    });
+    myMap.addPoint(tempPoint);
+});
+point.addListener("rightclick", function(){
+    alert("point right click");
+});
+myMap.addListener("rightclick", function(){
+    alert("mymap right click");
+});
+myMap.addPoint(point);
+myMap.addPoint(point2);
+</script>
+</html>

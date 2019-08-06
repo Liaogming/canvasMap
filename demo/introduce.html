@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>产品介绍</title>
+    <script type="text/javascript" src="http://www.wellnkiot.com/static/libs/vue/vue.min.js"></script>
+    <script src="http://www.wellnkiot.com/static/libs/element/index.js"></script>
+    <link rel="stylesheet" href="http://www.wellnkiot.com/static/security/libs/element/index.css">
+    <script src="heatmap.min.js"></script>
+    <script src="../hsmap.js"></script>
+</head>
+<style>
+    #app{
+        width:60%;
+        margin:0 auto;
+    }
+    .el-header {
+        background-color: #B3C0D1;
+        color: #333;
+        line-height: 60px;
+    }
+    .el-aside {
+        color: #333;
+    }
+    .el-collapse-item__content{
+        text-align: right;
+        cursor: pointer;
+    }
+    .el-collapse{
+        background-color: #e5e5e5;
+    }
+    .wai{
+        position: relative;
+        margin:20px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .map-control{
+        height:20px;
+        position: absolute;
+        z-index: 10;
+        bottom:0;
+        display: flex;
+    }
+    .start1{
+        padding-left:15px;
+    }
+    .titlea{
+        font:20px/40px blod songti;
+    }
+    .titlea2{
+        font:16px/30px blod songti;
+        margin-bottom: 20px;
+    }
+    .code{
+        background-color: rgb(247, 247, 247);
+    }
+    .first{
+
+    }
+    .second{
+        text-indent: 30px;
+    }
+    #imageMap7{
+       position: absolute;
+        z-index: -1;
+    }
+    #heatmaps{
+        width:500px;
+        height:300px;
+        z-index: 9999;
+        position:absolute;!important;
+    }
+</style>
+<body>
+<div id="app">
+    <el-container>
+        <el-header style="text-align: center">好数图片地图</el-header>
+        <el-container>
+            <el-aside width="200px">
+                <el-collapse v-model="activeNames" @change="handleChange">
+                    <el-collapse-item title="起步" name="1">
+                        <div @click="changeA1">JS API的加载</div>
+                        <div @click="changeA2">快速上手</div>
+                    </el-collapse-item>
+                    <el-collapse-item title="地图" name="2">
+                        <div @click="changeB1">地图的交互</div>
+                        <div @click="changeB2">地图的事件</div>
+                    </el-collapse-item>
+                    <el-collapse-item title="覆盖物" name="3">
+                        <div @click="changeC1">创建点标记</div>
+                        <div @click="changeC2">标记点的事件</div>
+                        <div @click="changeC3">路径标记</div>
+                    </el-collapse-item>
+                    <el-collapse-item title="可视化" name="4">
+                        <div @click="changeD1">热力图分布</div>
+                    </el-collapse-item>
+                </el-collapse>
+            </el-aside>
+            <el-main>
+                 <div class="start1" v-show="A1">
+                     <div class="titlea">JS API 的加载</div>
+                     <div class="titlea2">目前支持的方式是顺序同步加载方式，这种方式下，地图的初始化的代码要放在JS API 的脚本的标签之后：</div>
+                     <div class="code">
+                         <div class="first"><<span>script src="HSMAP.js"</span>></div>
+                         <div class="first"><<span>script type="text/javascript"</span>></div>
+                     </div>
+                 </div>
+                 <div class="start1" v-show="A2">
+                     <div class="titlea">快速上手</div>
+                     <div class="titlea2">创建一个地图只需要简单几行代码，构造参数中的 imageMap 为准备阶段添加的地图容器的 id；img 为要展示的地图图片； isDrag为该图片是否开启拖拽； width为图片的宽度； height为图片的高度：</div>
+                     <div class="code">
+                         <div class="first"><<span>canvas id="imageMap"></canvas</span></div>
+                         <div class="first">var myMap = new HSMap().Map("imageMap", {</div>
+                         <div class="second">    img: "rd_map.png",</div>
+                         <div class="second">    isDrag: false,</div>
+                         <div class="second">    width:500,</div>
+                         <div class="second">    height:300,</div>
+                         <div class="first">});</div>
+                     </div>
+                     <div class="wai">
+                         <canvas id="imageMap"></canvas>
+                     </div>
+                 </div>
+                 <div class="start1" v-show="B1">
+                     <div class="titlea">地图的交互</div>
+                     <div class="titlea2">图片地图支持Map对象放大,缩小与还原比例，创建对应的按钮并调用对应方法即可实现功能：</div>
+                     <div class="code">
+                         <div class="first"><<span>button class="big" onclick="myMap.toBig()">放大< /button</span> ></div>
+                         <div class="first"><<span>button class="small" onclick="myMap.toSmall()">缩小< /button</span> ></div>
+                         <div class="first"><<span>button class="reduct" onclick="myMap.toreduct()">还原< /button</span> ></div>
+                     </div>
+                     <div class="wai">
+                         <canvas id="imageMap2"></canvas>
+                         <div class="map-control">
+                             <button class="big" onclick="myMap2.toBig()">放大</button>
+                             <button class="small" onclick="myMap2.toSmall()">缩小</button>
+                             <button class="reduct" onclick="myMap2.toreduct()">还原比例</button>
+                         </div>
+                     </div>
+
+                 </div>
+                 <div class="start1" v-show="B2">
+                     <div class="titlea">地图的事件</div>
+                     <div class="titlea2">图片地图事件是对Map底图操作后触发的事件，目前支持点击事件和右击事件：</div>
+                     <div class="code">
+                         <div class="first">myMap.addListener("click", function(){</div>
+                             <div class="second">alert("mymap click");</div>
+                             <div class="second">});</div>
+                         <div class="first">myMap.addListener("rightclick", function(){</div>
+                         <div class="second">alert("mymap right click");</div>
+                         <div class="second">});</div>
+                     </div>
+                     <div class="wai">
+                         <canvas id="imageMap3"></canvas>
+                     </div>
+                 </div>
+                 <div class="start1" v-show="C1">
+                     <div class="titlea">创建点标记</div>
+                     <div class="titlea2">点标记是用来标示某个位置点信息的一种地图要素，目前支持图片点标记模式。首先创建Point对象，x为需要标记位置的横坐标；y为需要标记位置的纵坐标；img为标记的图片；isDrag为标记点是否可以拖拽移动；bottom为坐标底部标识（可选）；color为坐标底部标识需要渲染的颜色；
+                     最终调用addPoint方法即可绘制出标记点：</div>
+                     <div class="code">
+                         <div class="first">var point = new HSMap().Point({</div>
+                         <div class="second">x: 300,</div>
+                         <div class="second">y: 300,</div>
+                         <div class="second">img: "blue.png",</div>
+                         <div class="second">isDrag: true,</div>
+                         <div class="second">bottom: {</div>
+                         <div class="second">color: "rgba(102,204,0, 1)",</div>
+                         <div class="second">    }</div>
+                         <div class="second">   });</div>
+                         <div class="first">myMap.addPoint(point);</div>
+                     </div>
+                     <div class="wai">
+                         <canvas id="imageMap4"></canvas>
+                     </div>
+                 </div>
+                 <div class="start1" v-show="C2">
+                     <div class="titlea">标记点的事件</div>
+                     <div class="titlea2">目前支持标记点的点击事件，右击事件，以及标记点底部标识的提醒闪烁功能：</div>
+                     <div class="code">
+                         <div class="first">var x = 20;</div>
+                         <div class="first">var y = 5;</div>
+                         <div class="first">function flash(){</div>
+                         <div class="second">if(x > 20){</div>
+                         <div class="second">x = 0;</div>
+                         <div class="second">y = 0;</div>
+                         <div class="first">}else{</div>
+                         <div class="second">y +=0.25;</div>
+                         <div class="second">x +=1;</div>
+                         <div class="first">}</div>
+                         <div class="second">point2.bottom.x= x;</div>
+                         <div class="second">point2.bottom.y = y;</div>
+                         <div class="second">myMap5.drawImage();</div>
+                         <div class="second">requestAnimationFrame(flash);</div>
+                         <div class="first">}</div>
+                         <div class="first">requestAnimationFrame(flash);</div>
+                         <div class="first">point2.addListener("click", function(){</div>
+                         <div class="second">alert("point2 click");</div>
+                         <div class="first">});</div>
+                         <div class="first">point2.addListener("rightclick", function(){</div>
+                         <div class="second">alert("point2 right click");</div>
+                         <div class="first">});</div>
+                     </div>
+                     <div class="wai">
+                         <canvas id="imageMap5"></canvas>
+                     </div>
+                 </div>
+                 <div class="start1" v-show="C3">
+                     <div class="titlea">路径标记</div>
+                     <div class="titlea2">Line对象为用户提供在地图绘制直线与折线的能力。可以设置线条的宽度，颜色和需要连接的标记点组；创建对应的按钮并调用对应方法即可实现功能：</div>
+                     <div class="code">
+                         <div class="first"><<span>button class="lines" onclick="myMap.drawLine(line)">路径< /button</span> ></div>
+                         <div class="first">var line = new HSMap().Line({</div>
+                         <div class="second">color:'yellow',</div>
+                         <div class="second"> width:4,</div>
+                         <div class="second">pointArr:[[100,100],[300,500],[500,800],[900,700]]</div>
+                         <div class="first"> });</div>
+                         <div class="first"> myMap6.drawLine(line);</div>
+                     </div>
+                     <div class="wai">
+                         <canvas id="imageMap6"></canvas>
+                         <div class="map-control">
+                             <button id="lines" onclick="myMap6.drawLine(line)">路径</button>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="start1" v-show="D1">
+                     <div class="titlea">热力图分布</div>
+                     <div class="titlea2">图片地图支持覆盖热力图,代码请参考heatmap.js官方文档 <a href="https://www.patrick-wied.at/static/heatmapjs/docs.html#heatmap-addData" target="_blank">这里</a> ：</div>
+                     <div class="wai">
+                         <canvas id="imageMap7"></canvas>
+                         <div id="heatmaps"></div>
+                     </div>
+                 </div>
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+</body>
+<script>
+    var appVM = new Vue({
+        el:"#app",
+        data(){
+            return {
+                activeNames: ['1'],
+                A1:true,
+                A2:false,
+                B1:false,
+                B2:false,
+                C1:false,
+                C2:false,
+                C3:false,
+                D1:false,
+            };
+        },
+        methods: {
+            handleChange(val) {
+                console.log(val);
+            },
+            changeA1(){
+                this.A1=true;
+                this.A2=false;
+                this.B1=false;
+                this.B2=false;
+                this.C1=false;
+                this.C2=false;
+                this.C3=false;
+                this.D1=false;
+            },
+            changeA2(){
+                this.A1=false;
+                this.A2=true;
+                this.B1=false;
+                this.B2=false;
+                this.C1=false;
+                this.C2=false;
+                this.C3=false;
+                this.D1=false;
+            },
+            changeB1(){
+                this.A1=false;
+                this.A2=false;
+                this.B1=true;
+                this.B2=false;
+                this.C1=false;
+                this.C2=false;
+                this.C3=false;
+                this.D1=false;
+            },
+            changeB2(){
+                this.A1=false;
+                this.A2=false;
+                this.B1=false;
+                this.B2=true;
+                this.C1=false;
+                this.C2=false;
+                this.C3=false;
+                this.D1=false;
+            },
+            changeC1(){
+                this.A1=false;
+                this.A2=false;
+                this.B1=false;
+                this.B2=false;
+                this.C1=true;
+                this.C2=false;
+                this.C3=false;
+                this.D1=false;
+            },
+            changeC2(){
+                this.A1=false;
+                this.A2=false;
+                this.B1=false;
+                this.B2=false;
+                this.C1=false;
+                this.C2=true;
+                this.C3=false;
+                this.D1=false;
+            },
+            changeC3(){
+                this.A1=false;
+                this.A2=false;
+                this.B1=false;
+                this.B2=false;
+                this.C1=false;
+                this.C2=false;
+                this.C3=true;
+                this.D1=false;
+            },
+            changeD1(){
+                this.A1=false;
+                this.A2=false;
+                this.B1=false;
+                this.B2=false;
+                this.C1=false;
+                this.C2=false;
+                this.C3=false;
+                this.D1=true;
+            },
+        },
+    })
+</script>
+<script>
+    var myMap = new HSMap().Map("imageMap", {
+        img: "rd_map.png",
+        isDrag: false,
+        width:500,
+        height:300,
+    });
+    var myMap2 = new HSMap().Map("imageMap2", {
+        img: "rd_map.png",
+        isDrag: true,
+        width:500,
+        height:300,
+    });
+    var myMap3 = new HSMap().Map("imageMap3", {
+        img: "rd_map.png",
+        isDrag: true,
+        width:500,
+        height:300,
+    });
+    myMap3.addListener("click", function(){
+        alert("mymap click");
+    });
+    myMap3.addListener("rightclick", function(){
+        alert("mymap right click");
+    });
+    var myMap4 = new HSMap().Map("imageMap4", {
+        img: "rd_map.png",
+        isDrag: true,
+        width:500,
+        height:300,
+    });
+    var point = new HSMap().Point({
+        x: 300,
+        y: 300,
+        img: "blue.png",
+        isDrag: true,
+        bottom: {
+            color: "rgba(102,204,0, 1)",
+        }
+    });
+    myMap4.addPoint(point);
+    var myMap5 = new HSMap().Map("imageMap5", {
+        img: "rd_map.png",
+        isDrag: true,
+        width:500,
+        height:300,
+    });
+    var point2 = new HSMap().Point({
+        x: 443.23828124999994,
+        y: 230.93123209169053,
+        img: "blue.png",
+        isDrag: true,
+        bottom: {
+            color: "red",
+            x: 0,
+            y: 0
+        }
+    });
+    var x = 20;
+    var y = 5;
+    function flash(){
+        if(x > 20){
+            x = 0;
+            y = 0;
+        }else{
+            y +=0.25;
+            x +=1;
+        }
+        point2.bottom.x= x;
+        point2.bottom.y = y;
+        myMap5.drawImage();
+        requestAnimationFrame(flash);
+    }
+    requestAnimationFrame(flash);
+    point2.addListener("click", function(){
+        alert("point2 click");
+    });
+    point2.addListener("rightclick", function(){
+        alert("point2 right click");
+    });
+    myMap5.addPoint(point2);
+    var myMap6= new HSMap().Map("imageMap6", {
+        img: "rd_map.png",
+        isDrag: true,
+        width:500,
+        height:300,
+    });
+    var line = new HSMap().Line({
+        color:'yellow',
+        width:4,
+        pointArr:[[100,100],[300,500],[500,800],[900,700]]
+    });
+    var myMap7 = new HSMap().Map("imageMap7", {
+        img: "rd_map.png",
+        isDrag: true,
+        width:500,
+        height:300,
+    });
+</script>
+<script>
+    var heatmapInstance = h337.create({
+        container: document.querySelector('#heatmaps'),
+        radius:30,
+        maxOpacity: .3,
+        minOpacity: 0,
+        blur: .75
+    });
+    // document.querySelector('#heatmaps').onclick = function(ev) {
+    //     heatmapInstance.addData({
+    //         x: ev.layerX,
+    //         y: ev.layerY,
+    //         value: 1
+    //     });
+    // };
+    var points = [];
+    var max = 0;
+    var width = 840;
+    var height = 400;
+    var len = 300;
+
+    while (len--) {
+        var val = Math.floor(Math.random()*100);
+        // now also with custom radius
+        var radius = Math.floor(Math.random()*70);
+
+        max = Math.max(max, val);
+        var point = {
+            x: Math.floor(Math.random()*width),
+            y: Math.floor(Math.random()*height),
+            value: val,
+            // radius configuration on point basis
+            radius: radius
+        };
+        points.push(point);
+    }
+    // heatmap data format
+    var data = {
+        max: max,
+        data: points
+    };
+    // if you have a set of datapoints always use setData instead of addData
+    // for data initialization
+    heatmapInstance.setData(data);
+</script>
+</html>
